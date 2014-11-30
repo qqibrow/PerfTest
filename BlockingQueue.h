@@ -7,5 +7,6 @@ public:
     BlockingQueue() {}
     virtual T take() = 0;
     virtual void put(T value) = 0;
+    virtual ~BlockingQueue() {}
 };
 #endif

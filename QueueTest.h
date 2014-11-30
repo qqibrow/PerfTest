@@ -8,6 +8,7 @@
 class QueueTest {
 public:
     explicit QueueTest(BlockingQueue<long>* blockingQueue): queue_(blockingQueue) {}
+    virtual ~QueueTest();
     void RunTest(const long count);
 private:
     void Reset(countdown_latch* latch);

@@ -5,10 +5,10 @@
 using namespace std;
 
 int main() {
-    int count = 100;
+    int count = 1000000;
     QueueTest lockQueueTest(new LockBlockingQueue<long>());
     lockQueueTest.RunTest(count);
-    QueueTest lockFreeQueueTest(new LockBlockingQueue<long>());
+    QueueTest lockFreeQueueTest(new LockFreeBlockingQueue<long>());
     lockFreeQueueTest.RunTest(count);
     return 0;
 }
