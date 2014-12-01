@@ -52,11 +52,16 @@ void QueueTest::RunTest(const long count, Ops ops) {
     this->Reset(&latch);
 
     long expect = 0;
-    for(long i = 0; i < count; ++i) {
-        long curr = i;
-        expect = ops(expect, curr);
-        this->queue_->put(curr);
-    }
+    std::thread producer([&]() {
+        long local_expect = 0;
+        for(long i = 0; i < count; ++i) {
+            long curr = i;
+            local_expect = ops(local_expect, curr);
+            queue_->put(curr);
+        }
+        expect = local_expect;
+    });
+
     std::thread th(&QueueTest::Start<Ops>, this, count, ops);
     std::clock_t c_start = std::clock();
     latch.wait();
@@ -67,8 +72,9 @@ void QueueTest::RunTest(const long count, Ops ops) {
     double miliseconds = 1000.0 * (c_end-c_start) / CLOCKS_PER_SEC;
     printf("Eclipsed time: %lf ms.\n", miliseconds);
     long ops_per_seconds = (double)count*1000 / miliseconds;
-    printf("%ld ops per seconds\n", ops_per_seconds);
+    printf("%'ld ops per seconds\n", ops_per_seconds);
     th.join();
+    producer.join();
     printf("Report finished.\n");
 }
 #endif
