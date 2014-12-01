@@ -4,7 +4,7 @@ SET( EX_PLATFORM 64 )
 SET( EX_PLATFORM_NAME "x64" )
 set(CMAKE_C_COMPILER /home/y/bin64/gcc)
 set(CMAKE_CXX_COMPILER /home/y/bin64/g++)
-set(gflags_DIR,"/usr/local/lib/cmake/gflags/")
+#set(gflags_DIR,"/usr/local/lib/cmake/gflags/")
 
 project(Perf)
 
@@ -18,4 +18,4 @@ endif()
 
 set(SOURCE_FILES main.cpp countdown_latch.cc QueueTest.cc)
 add_executable(Perf ${SOURCE_FILES})
-target_link_libraries(Perf gflags)
+#target_link_libraries(Perf gflags)
