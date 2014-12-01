@@ -2,7 +2,10 @@ cmake_minimum_required(VERSION 2.6.4)
 
 SET( EX_PLATFORM 64 )
 SET( EX_PLATFORM_NAME "x64" )
-find_package (gflags REQUIRED)
+set(CMAKE_C_COMPILER /home/y/bin64/gcc)
+set(CMAKE_CXX_COMPILER /home/y/bin64/g++)
+set(gflags_DIR,"/usr/local/lib/cmake/gflags/")
+
 project(Perf)
 
 include_directories(. ~/boost_1_56_0/)
