@@ -1,4 +1,4 @@
-//#include <gflags/gflags.h>
+#include <gflags/gflags.h>
 #include "LockBlockingQueue.h"
 #include "LockFreeBlockingQueue.h"
 #include "QueueTest.h"
