@@ -22,12 +22,13 @@ long QueueTest::GetValue() const {
     return value_;
 }
 
-void QueueTest::Start(const long count) {
+template <typename Ops>
+void QueueTest::Start(const long count, Ops ops) {
     long sequence = 1;
     running_ = true;
     while(running_) {
         long curr = queue_->take();
-        this->value_ += curr;
+        this->value_ = ops(this->value_, curr);
 
         if(sequence++ == count) {
             latch_->count_down();
@@ -45,7 +46,7 @@ void QueueTest::RunTest(const long count) {
         expect += 1;
         this->queue_->put(1);
     }
-    thread th(&QueueTest::Start, this, count);
+    thread th(&QueueTest::Start<std::plus<long>>, this, count, std::plus<long>());
     std::clock_t c_start = std::clock();
     latch.wait();
     std::clock_t c_end = std::clock();

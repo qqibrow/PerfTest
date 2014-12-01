@@ -13,7 +13,9 @@ public:
 private:
     void Reset(countdown_latch* latch);
     long GetValue() const;
-    void Start(const long);
+
+    template <typename Ops>
+    void Start(const long, Ops ops);
 private:
     BlockingQueue<long>* queue_;
     countdown_latch* latch_;
