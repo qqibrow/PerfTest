@@ -5,6 +5,7 @@
 #include <ctime>
 #include <thread>
 #include <assert.h>
+#include <unistd.h>
 
 #include "BlockingQueue.h"
 #include "countdown_latch.h"
@@ -53,6 +54,7 @@ void QueueTest::RunTest(const long count, Ops ops) {
 
     long expect = 0;
     std::thread producer([&]() {
+        std::clock_t c_start = std::clock();
         long local_expect = 0;
         for(long i = 0; i < count; ++i) {
             long curr = i;
@@ -60,8 +62,13 @@ void QueueTest::RunTest(const long count, Ops ops) {
             queue_->put(curr);
         }
         expect = local_expect;
+        std::clock_t c_end = std::clock();
+        double miliseconds = 1000.0 * (c_end-c_start) / CLOCKS_PER_SEC;
+        printf("Producer finished with time %lf ms.\n", miliseconds);
     });
 
+    //usleep(20 * 1000);
+    producer.join();
     std::thread th(&QueueTest::Start<Ops>, this, count, ops);
     std::clock_t c_start = std::clock();
     latch.wait();
@@ -74,7 +81,6 @@ void QueueTest::RunTest(const long count, Ops ops) {
     long ops_per_seconds = (double)count*1000 / miliseconds;
     printf("%'ld ops per seconds\n", ops_per_seconds);
     th.join();
-    producer.join();
     printf("Report finished.\n");
 }
 #endif
