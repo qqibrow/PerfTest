@@ -6,6 +6,7 @@
 #include <thread>
 #include <assert.h>
 #include <unistd.h>
+#include <random>
 
 #include "BlockingQueue.h"
 #include "countdown_latch.h"
@@ -54,10 +55,12 @@ void QueueTest::RunTest(const long count, Ops ops) {
 
     long expect = 0;
     std::thread producer([&]() {
+        std::default_random_engine generator((unsigned int)time(0));
+        std::uniform_int_distribution<int> distribution(-count,count);
         std::clock_t c_start = std::clock();
         long local_expect = 0;
         for(long i = 0; i < count; ++i) {
-            long curr = i;
+            long curr = distribution(generator);
             local_expect = ops(local_expect, curr);
             queue_->put(curr);
         }

@@ -12,8 +12,8 @@ int main(int argc, char* argv[]) {
     //long FLAGS_operator_count = 1000*1000*10;
     printf("Pass in operator count: %lld.\n", FLAGS_operator_count);
     QueueTest lockQueueTest(new LockBlockingQueue<long>());
-    lockQueueTest.RunTest(FLAGS_operator_count, std::plus<long>());
+    lockQueueTest.RunTest(FLAGS_operator_count, std::minus<long>());
     QueueTest lockFreeQueueTest(new LockFreeBlockingQueue<long>());
-    lockFreeQueueTest.RunTest(FLAGS_operator_count, std::plus<long>());
+    lockFreeQueueTest.RunTest(FLAGS_operator_count, std::minus<long>());
     return 0;
 }
