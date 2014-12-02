@@ -31,11 +31,11 @@ public:
     }
 private:
     void Produce( const T& t ) {
-        Node* last_real = last.load(boost::memory_order_relaxed);
+        Node* last_real = last.load(boost::memory_order_acquire);
         last_real->next = new Node(t);    // add the new item
-        last.store(last_real->next, boost::memory_order_relaxed); // publish it
+        last.store(last_real->next, boost::memory_order_release); // publish it
 
-        Node* divider_real = divider.load(boost::memory_order_relaxed);
+        Node* divider_real = divider.load(boost::memory_order_acquire);
         while( first != divider_real ) { // trim unused nodes
             Node* tmp = first;
             first = first->next;
@@ -44,11 +44,11 @@ private:
     }
 
     bool Consume( T& result ) {
-        Node* divider_real = divider.load(boost::memory_order_relaxed);
-        Node* last_real = last.load(boost::memory_order_relaxed);
+        Node* divider_real = divider.load(boost::memory_order_acquire);
+        Node* last_real = last.load(boost::memory_order_acquire);
         if( divider_real != last_real ) {         // if queue is nonempty
             result = divider_real->next->value;  // C: copy it back
-            divider.store(divider_real->next, boost::memory_order_relaxed);
+            divider.store(divider_real->next, boost::memory_order_release);
             return true;              // and report success
         }
         return false;               // else report empty
