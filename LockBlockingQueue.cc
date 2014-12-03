@@ -13,7 +13,6 @@ T LockBlockingQueue<T>::take() {
     queue_.pop();
 
     lock.unlock();
-    condition_.notify_one();
     return curr;
 }
 
