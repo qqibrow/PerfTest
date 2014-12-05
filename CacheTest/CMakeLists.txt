@@ -15,4 +15,5 @@ elseif(UNIX)
 endif()
 
 add_executable(cache_line_test cache_line_test.cc)
+add_executable(cache_line_test2 ./cache_lint_test2.cc)
 target_link_libraries(cache_line_test gflags)
