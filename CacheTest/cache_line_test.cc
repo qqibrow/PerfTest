@@ -17,7 +17,6 @@ void UpdateAtPosition(int* position) {
 }
 int main(int argc, char * argv[])
 {
-    printf("%d", sizeof(int));
     if(argc < 3) {
         printf("Too few arguments\n");
         return -1;
