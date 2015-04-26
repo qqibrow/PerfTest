@@ -1,4 +1,6 @@
-#include <boost/atomic.hpp>
+#ifndef LOCK_FREE
+#define LOCK_FREE
+#include <atomic>
 
 // Single prudcer, sinlge consumer Ringbuffer
 
@@ -12,27 +14,27 @@ public:
 
     bool offer(const T& value)
     {
-        size_t head = head_.load(boost::memory_order_relaxed);
+        size_t head = head_.load(std::memory_order_relaxed);
         size_t next_head = next(head);
 
         // busy waiting until tail_ been consumed.
-        if (next_head == tail_.load(boost::memory_order_acquire))
+        if (next_head == tail_.load(std::memory_order_acquire))
             return false;
 
         ring_[head] = value;
-        head_.store(next_head, boost::memory_order_release);
+        head_.store(next_head, std::memory_order_release);
         return true;
     }
     bool poll(T& value)
     {
-        size_t tail = tail_.load(boost::memory_order_relaxed);
+        size_t tail = tail_.load(std::memory_order_relaxed);
 
         // busy waiting until head advance with push.
-        if (tail == head_.load(boost::memory_order_acquire))
+        if (tail == head_.load(std::memory_order_acquire))
             return false;
 
         value = ring_[tail];
-        tail_.store(next(tail), boost::memory_order_release);
+        tail_.store(next(tail), std::memory_order_release);
         return true;
     }
 private:
@@ -41,5 +43,7 @@ private:
         return (current + 1) % Size;
     }
     T ring_[Size];
-    boost::atomic<size_t> head_, tail_;
+    std::atomic<size_t> head_, tail_;
 };
+
+#endif

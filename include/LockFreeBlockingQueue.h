@@ -1,7 +1,11 @@
 #ifndef QQIBROW_LOCKFREEBLOCKINGQUEUE_H_
 #define QQIBROW_LOCKFREEBLOCKINGQUEUE_H_
 
-#include <boost/atomic.hpp>
+#include <atomic>
+/*
+ * A lockfree blocking queue refer from:
+ * http://www.drdobbs.com/parallel/measuring-parallel-performance-optimizin/212201163?pgno=1
+ */
 
 template <typename T>
 class LockFreeBlockingQueue : public BlockingQueue<T> {
@@ -9,8 +13,8 @@ public:
     LockFreeBlockingQueue() {
         Node* t = new Node();
         first = t;
-        divider.store(t, boost::memory_order_relaxed);
-        last.store(t, boost::memory_order_relaxed);
+        divider.store(t, std::memory_order_relaxed);
+        last.store(t, std::memory_order_relaxed);
     }
     ~LockFreeBlockingQueue() {
         while( first != nullptr ) {   // release the list
@@ -20,40 +24,30 @@ public:
         }
     }
 
-    virtual T take() {
-        T return_value;
-        while(!Consume(return_value));
-        return return_value;
-    }
-
-    virtual void put(T value) {
-        Produce(value);
-    }
-private:
-    void Produce( const T& t ) {
-        Node* last_real = last.load(boost::memory_order_acquire);
+    bool offer( const T& t ) {
+        Node* last_real = last.load(std::memory_order_acquire);
         last_real->next = new Node(t);    // add the new item
-        last.store(last_real->next, boost::memory_order_release); // publish it
+        last.store(last_real->next, std::memory_order_release); // publish it
 
-        Node* divider_real = divider.load(boost::memory_order_acquire);
+        Node* divider_real = divider.load(std::memory_order_acquire);
         while( first != divider_real ) { // trim unused nodes
             Node* tmp = first;
             first = first->next;
             delete tmp;
         }
+        return true;
     }
 
-    bool Consume( T& result ) {
-        Node* divider_real = divider.load(boost::memory_order_acquire);
-        Node* last_real = last.load(boost::memory_order_acquire);
+    bool poll( T& result ) {
+        Node* divider_real = divider.load(std::memory_order_acquire);
+        Node* last_real = last.load(std::memory_order_acquire);
         if( divider_real != last_real ) {         // if queue is nonempty
             result = divider_real->next->value;  // C: copy it back
-            divider.store(divider_real->next, boost::memory_order_release);
+            divider.store(divider_real->next, std::memory_order_release);
             return true;              // and report success
         }
         return false;               // else report empty
     }
-
 private:
     struct Node {
         Node() : next(nullptr) {}
@@ -62,33 +56,6 @@ private:
         Node* next;
     };
     Node* first;             // for producer only
-    boost::atomic<Node*> divider, last;         // shared
+    std::atomic<Node*> divider, last;         // shared
 };
-
-
-template<>
-bool LockFreeBlockingQueue<long>::Consume(long& result) {
-    Node* divider_real = divider.load(boost::memory_order_relaxed);
-    Node* last_real = last.load(boost::memory_order_relaxed);
-    if( divider_real != last_real ) {         // if queue is nonempty
-        result = divider_real->next->value;  // C: copy it back
-        divider.store(divider_real->next, boost::memory_order_relaxed);
-        return true;              // and report success
-    }
-    return false;               // else report empty
-}
-
-template<>
-void LockFreeBlockingQueue<long>::Produce( const long& t ) {
-    Node* last_real = last.load(boost::memory_order_relaxed);
-    last_real->next = new Node(t);    // add the new item
-    last.store(last_real->next, boost::memory_order_relaxed); // publish it
-
-    Node* divider_real = divider.load(boost::memory_order_relaxed);
-    while( first != divider_real ) { // trim unused nodes
-        Node* tmp = first;
-        first = first->next;
-        delete tmp;
-    }
-}
 #endif

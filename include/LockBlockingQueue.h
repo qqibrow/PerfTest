@@ -7,6 +7,11 @@
 
 #include "BlockingQueue.h"
 
+/*
+ * A very basic blocking queue implemented using std::queue and std::mutex.
+ * take() and put() operation share the same global mutex.
+ */
+
 template <typename T>
 class LockBlockingQueue : public BlockingQueue<T> {
 public:

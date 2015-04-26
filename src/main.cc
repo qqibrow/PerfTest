@@ -18,23 +18,19 @@ void RunPerfTest(BlockingQueue<int>* queue, const long count);
 int main(int argc, char* argv[]) {
 
     gflags::ParseCommandLineFlags(&argc, &argv, true);
-    /*
     printf("Pass in operator count: %lld.\n", FLAGS_operator_count);
-    QueueTest lockQueueTest(new LockBlockingQueue<long>());
-    lockQueueTest.RunTest(FLAGS_operator_count, std::minus<long>());
-    QueueTest lockFreeQueueTest(new LockFreeBlockingQueue<long>());
-    lockFreeQueueTest.RunTest(FLAGS_operator_count, std::minus<long>());
-    QueueTest ringBufferTest(new LockFreeBlockingQueue<long>());
-    ringBufferTest.RunTest(FLAGS_operator_count, std::minus<long>());
-    */
 
-    /*
+    printf("LockFreeQueue\n");
+    BlockingQueue<int>* queue = new LockFreeBlockingQueue<int>();
+    for(int i = 0; i < 10; ++i) {
+        RunPerfTest(queue, FLAGS_operator_count);
+    }
+
     printf("LockFreeRingBuffer\n");
     BlockingQueue<int>* q = new LockFreeRingBuffer<int>();
     for(int i = 0; i < 10; ++i) {
         RunPerfTest(q, FLAGS_operator_count);
     }
-     */
 
     printf("RingbufferV2\n");
     BlockingQueue<int>* q2 = new RingBufferV2<int>();
