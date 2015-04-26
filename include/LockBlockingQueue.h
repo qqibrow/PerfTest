@@ -21,6 +21,5 @@ private:
     bool notEmpty_;
 };
 
-#include "LockBlockingQueue.cc"
-
+#include "impl/LockBlockingQueue.defn.h"
 #endif

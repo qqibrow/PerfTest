@@ -1,11 +1,11 @@
 #include <gflags/gflags.h>
 #include <chrono>
 
-#include "LockBlockingQueue.h"
-#include "LockFreeBlockingQueue.h"
-#include "LockFreeRingBuffer.h"
-#include "RingBufferV2.h"
-#include "QueueTest.h"
+#include "../include/LockBlockingQueue.h"
+#include "../include/LockFreeBlockingQueue.h"
+#include "../include/LockFreeRingBuffer.h"
+#include "../include/RingBufferV2.h"
+#include "../include/QueueTest.h"
 
 #define TEST_VALUE 5
 
