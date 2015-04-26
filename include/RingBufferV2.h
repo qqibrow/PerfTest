@@ -2,6 +2,8 @@
 
 // Single prudcer, sinlge consumer Ringbuffer
 
+#include <atomic>
+
 template<typename T>
 class RingBufferV2 : public BlockingQueue<T> {
 public:
@@ -21,25 +23,25 @@ public:
 
     bool offer(const T& value)
     {
-        const long currentTail = tail_.load(boost::memory_order_relaxed);
+        const long currentTail = tail_.load(std::memory_order_relaxed);
         const long wrapPoint = currentTail - rightSize_;
 
         if(headCache_ <= wrapPoint) {
-            headCache_ = head_.load(boost::memory_order_acquire);
+            headCache_ = head_.load(std::memory_order_acquire);
             if(headCache_ <= wrapPoint) {
                 return false;
             }
         }
 
         ring_[(long)currentTail & mask_] = value;
-        tail_.store(currentTail + 1, boost::memory_order_release);
+        tail_.store(currentTail + 1, std::memory_order_release);
         return true;
     }
     bool poll(T& value)
     {
-        const int currentHead = head_.load(boost::memory_order_relaxed);
+        const int currentHead = head_.load(std::memory_order_relaxed);
         if(currentHead >= tailCache_) {
-            tailCache_ = tail_.load(boost::memory_order_acquire);
+            tailCache_ = tail_.load(std::memory_order_acquire);
             if(currentHead >= tailCache_) {
                 return false;
             }
@@ -47,7 +49,7 @@ public:
         }
         int index = (int)currentHead & mask_;
         value = ring_[index];
-        head_.store(currentHead + 1, boost::memory_order_release);
+        head_.store(currentHead + 1, std::memory_order_release);
         return true;
     }
 private:
@@ -62,6 +64,6 @@ private:
     size_t rightSize_;
     int mask_;
 
-    alignas(128) boost::atomic<long> head_, tail_;
+    alignas(128) std::atomic<long> head_, tail_;
     alignas(128) long headCache_, tailCache_;
 };
