@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <random>
 
+#include "Util.h"
 #include "BlockingQueue.h"
 #include "countdown_latch.h"
 
@@ -82,7 +83,7 @@ void QueueTest::RunTest(const long count, Ops ops) {
     double miliseconds = 1000.0 * (c_end-c_start) / CLOCKS_PER_SEC;
     printf("Eclipsed time: %lf ms.\n", miliseconds);
     long ops_per_seconds = (double)count*1000 / miliseconds;
-    printf("%'ld ops per seconds\n", ops_per_seconds);
+    printf("%,ld ops per seconds\n", ops_per_seconds);
     th.join();
     printf("Report finished.\n");
 }
