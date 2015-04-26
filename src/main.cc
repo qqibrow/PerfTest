@@ -1,6 +1,7 @@
 #include <gflags/gflags.h>
 #include <chrono>
 
+
 #include "../include/LockBlockingQueue.h"
 #include "../include/LockFreeBlockingQueue.h"
 #include "../include/LockFreeRingBuffer.h"
@@ -27,11 +28,13 @@ int main(int argc, char* argv[]) {
     ringBufferTest.RunTest(FLAGS_operator_count, std::minus<long>());
     */
 
+    /*
     printf("LockFreeRingBuffer\n");
     BlockingQueue<int>* q = new LockFreeRingBuffer<int>();
     for(int i = 0; i < 10; ++i) {
         RunPerfTest(q, FLAGS_operator_count);
     }
+     */
 
     printf("RingbufferV2\n");
     BlockingQueue<int>* q2 = new RingBufferV2<int>();
