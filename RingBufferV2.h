@@ -24,9 +24,9 @@ public:
         const long currentTail = tail_.load(boost::memory_order_relaxed);
         const long wrapPoint = currentTail - rightSize_;
 
-        if(headCache_.value <= wrapPoint) {
-            headCache_.value = head_.load(boost::memory_order_acquire);
-            if(headCache_.value <= wrapPoint) {
+        if(headCache_ <= wrapPoint) {
+            headCache_ = head_.load(boost::memory_order_acquire);
+            if(headCache_ <= wrapPoint) {
                 return false;
             }
         }
@@ -38,9 +38,9 @@ public:
     bool poll(T& value)
     {
         const int currentHead = head_.load(boost::memory_order_relaxed);
-        if(currentHead >= tailCache_.value) {
-            tailCache_.value = tail_.load(boost::memory_order_acquire);
-            if(currentHead >= tailCache_.value) {
+        if(currentHead >= tailCache_) {
+            tailCache_ = tail_.load(boost::memory_order_acquire);
+            if(currentHead >= tailCache_) {
                 return false;
             }
 
@@ -62,22 +62,6 @@ private:
     size_t rightSize_;
     int mask_;
 
-    class PaddingAtomicInt : public boost::atomic<long> {
-    public:
-        PaddingAtomicInt(long init) : boost::atomic<long>(init) {
-
-        }
-        volatile long p1, p2, p3, p4, p5, p6 = 7;
-    };
-
-    struct PaddingLong {
-        PaddingLong() : value(0) {
-
-        }
-        long value, p1, p2, p3, p4, p5, p6;
-    };
-
-
-    PaddingAtomicInt head_, tail_;
-    PaddingLong headCache_, tailCache_;
+    alignas(128) boost::atomic<long> head_, tail_;
+    alignas(128) long headCache_, tailCache_;
 };
