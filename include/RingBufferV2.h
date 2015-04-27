@@ -17,10 +17,6 @@ public:
     virtual ~RingBufferV2() {
         delete[] ring_;
     }
-
-    void put(T value) {}
-    T take() {}
-
     bool offer(const T& value)
     {
         const long currentTail = tail_.load(std::memory_order_relaxed);

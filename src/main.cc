@@ -1,3 +1,4 @@
+#include <thread>
 #include <gflags/gflags.h>
 #include <chrono>
 
@@ -6,7 +7,6 @@
 #include "../include/LockFreeBlockingQueue.h"
 #include "../include/LockFreeRingBuffer.h"
 #include "../include/RingBufferV2.h"
-#include "../include/QueueTest.h"
 
 #define TEST_VALUE 5
 
