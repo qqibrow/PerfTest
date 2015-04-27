@@ -72,6 +72,6 @@ void RunPerfTest(Queue<int>* queue, const long count) {
   nanoseconds total_nanoseconds =
       std::chrono::duration_cast<nanoseconds>(t1 - t0);
   long long ops = count * 1000 * 1000 * 1000 / total_nanoseconds.count();
-  printf("%ld - ops/sec=%lld - %s result=%d\n", count, FormatWithCommas<long>(ops),
+  printf("%ld - ops/sec=%s - %s result=%d\n", count, FormatWithCommas<long>(ops).c_str(),
          queue->GetQueueName().c_str(), result);
 }
