@@ -2,9 +2,9 @@
 #define QQIBROW_BLOCKINGQUEUE
 
 template <typename T>
-class BlockingQueue {
+class Queue {
 public:
-    BlockingQueue() {}
+    Queue() {}
 
     // Blocking call. Return until operation done.
 
@@ -27,6 +27,6 @@ public:
     virtual bool offer(const T& value) = 0;
 
     virtual std::string GetQueueName() const { return std::string("NULL");};
-    virtual ~BlockingQueue() {}
+    virtual ~Queue() {}
 };
 #endif

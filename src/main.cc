@@ -13,7 +13,7 @@
 DEFINE_uint64(operator_count, 1000*1000, "The time of simple operator to run in test.");
 using namespace std;
 
-void RunPerfTest(BlockingQueue<int>* queue, const long count);
+void RunPerfTest(Queue<int>* queue, const long count);
 
 int main(int argc, char* argv[]) {
 
@@ -21,19 +21,19 @@ int main(int argc, char* argv[]) {
     printf("Pass in operator count: %lld.\n", FLAGS_operator_count);
 
     printf("LockFreeQueue\n");
-    BlockingQueue<int>* queue = new LockFreeBlockingQueue<int>();
+    Queue<int>* queue = new LockFreeBlockingQueue<int>();
     for(int i = 0; i < 10; ++i) {
         RunPerfTest(queue, FLAGS_operator_count);
     }
 
     printf("LockFreeRingBuffer\n");
-    BlockingQueue<int>* q = new LockFreeRingBuffer<int>();
+    Queue<int>* q = new LockFreeRingBuffer<int>();
     for(int i = 0; i < 10; ++i) {
         RunPerfTest(q, FLAGS_operator_count);
     }
 
     printf("RingbufferV2\n");
-    BlockingQueue<int>* q2 = new RingBufferV2<int>();
+    Queue<int>* q2 = new RingBufferV2<int>();
     for(int i = 0; i < 10; ++i) {
         RunPerfTest(q2, FLAGS_operator_count);
     }
@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
 
 }
 
-void Producer(BlockingQueue<int>* queue, const long count) {
+void Producer(Queue<int>* queue, const long count) {
     long i = count;
     do {
         while(!queue->offer(TEST_VALUE)) {
@@ -51,7 +51,7 @@ void Producer(BlockingQueue<int>* queue, const long count) {
     } while( 0 != --i);
 }
 
-void RunPerfTest(BlockingQueue<int>* queue, const long count) {
+void RunPerfTest(Queue<int>* queue, const long count) {
     using std::chrono::high_resolution_clock;
     using std::chrono::milliseconds;
     using std::chrono::nanoseconds;

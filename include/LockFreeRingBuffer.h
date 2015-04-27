@@ -5,7 +5,7 @@
 // Single prudcer, sinlge consumer Ringbuffer
 
 template<typename T, size_t Size = 100000000>
-class LockFreeRingBuffer : public BlockingQueue<T> {
+class LockFreeRingBuffer : public Queue<T> {
 public:
     LockFreeRingBuffer() : head_(0), tail_(0) {}
 

@@ -5,7 +5,7 @@
 #include <condition_variable>
 #include <queue>
 
-#include "BlockingQueue.h"
+#include "Queue.h"
 
 /*
  * A very basic blocking queue implemented using std::queue and std::mutex.
@@ -13,7 +13,7 @@
  */
 
 template <typename T>
-class LockBlockingQueue : public BlockingQueue<T> {
+class LockBlockingQueue : public Queue<T> {
 public:
     LockBlockingQueue() : notEmpty_(false) {}
     virtual T take();

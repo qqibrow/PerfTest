@@ -8,7 +8,7 @@
  */
 
 template <typename T>
-class LockFreeBlockingQueue : public BlockingQueue<T> {
+class LockFreeBlockingQueue : public Queue<T> {
 public:
     LockFreeBlockingQueue() {
         Node* t = new Node();

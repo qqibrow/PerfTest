@@ -5,7 +5,7 @@
 #include <atomic>
 
 template<typename T>
-class RingBufferV2 : public BlockingQueue<T> {
+class RingBufferV2 : public Queue<T> {
 public:
     RingBufferV2() : head_(0), tail_(0) {
         const size_t size = 1024*1024;
