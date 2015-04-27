@@ -1,5 +1,9 @@
-#ifndef QQIBROW_LOCKINGBLOCKINGQUEUE
-#define QQIBROW_LOCKINGBLOCKINGQUEUE
+/*
+ * Copyright (c) 2015 qqibrow@gmail.com
+ */
+
+#ifndef INCLUDE_LOCKBLOCKINGQUEUE_H_
+#define INCLUDE_LOCKBLOCKINGQUEUE_H_
 
 #include <mutex>
 #include <condition_variable>
@@ -15,36 +19,37 @@
 
 template <typename T>
 class LockBlockingQueue : public Queue<T> {
-public:
-    LockBlockingQueue() : notEmpty_(false) {}
-    virtual ~LockBlockingQueue() {}
+ public:
+  LockBlockingQueue() : notEmpty_(false) {}
+  virtual ~LockBlockingQueue() {}
 
-    virtual T take() {
-        // First make sure queue is not empty.
-        std::unique_lock<std::mutex> lock(condition_mutex_);
-        while(!notEmpty_) {
-            condition_.wait(lock);
-        }
-
-        T curr = queue_.front();
-        queue_.pop();
-
-        lock.unlock();
-        return curr;
+  virtual T take() {
+    // First make sure queue is not empty.
+    std::unique_lock<std::mutex> lock(condition_mutex_);
+    while (!notEmpty_) {
+      condition_.wait(lock);
     }
 
-    virtual void put(T value) {
-        {
-            std::lock_guard<std::mutex> lk(condition_mutex_);
-            queue_.push(value);
-            notEmpty_ = true;
-        }
-        condition_.notify_one();
+    T curr = queue_.front();
+    queue_.pop();
+
+    lock.unlock();
+    return curr;
+  }
+
+  virtual void put(T value) {
+    {
+      std::lock_guard<std::mutex> lk(condition_mutex_);
+      queue_.push(value);
+      notEmpty_ = true;
     }
-private:
-    std::queue<T> queue_;
-    std::mutex condition_mutex_;
-    std::condition_variable condition_;
-    bool notEmpty_;
+    condition_.notify_one();
+  }
+
+ private:
+  std::queue<T> queue_;
+  std::mutex condition_mutex_;
+  std::condition_variable condition_;
+  bool notEmpty_;
 };
-#endif
+#endif  // INCLUDE_LOCKBLOCKINGQUEUE_H_
