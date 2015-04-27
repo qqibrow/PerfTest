@@ -4,11 +4,11 @@
 #include <iostream>
 
 
-#include "../include/LockBlockingQueue.h"
-#include "../include/LockFreeBlockingQueue.h"
-#include "../include/LockFreeRingBuffer.h"
-#include "../include/LockFreeRingBufferV2.h"
-#include "../include/LockFreeRingBufferV3.h"
+#include "LockBlockingQueue.h"
+#include "LockFreeBlockingQueue.h"
+#include "LockFreeRingBuffer.h"
+#include "LockFreeRingBufferV2.h"
+#include "LockFreeRingBufferV3.h"
 
 #define TEST_VALUE 5
 #define RUN_TIMES 5

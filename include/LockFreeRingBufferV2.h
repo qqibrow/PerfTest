@@ -13,7 +13,7 @@ public:
         mask_ = rightSize_ - 1;
         ring_ = new T[rightSize_];
     }
-    std::string GetName() {return "LockFreeRingBuffer";};
+    std::string GetName() {return "LockFreeRingBufferV2";};
 
     virtual ~LockFreeRingBufferV2() {
         delete[] ring_;
