@@ -2,10 +2,8 @@
  * Copyright (c) 2015 qqibrow@gmail.com
  */
 
-#include <boost/atomic.hpp>
-
-// Single prudcer, sinlge consumer Ringbuffer
-
+#ifndef INCLUDE_LOCKFREERINGBUFFERV2_H_
+#define INCLUDE_LOCKFREERINGBUFFERV2_H_
 #include <atomic>
 
 template <typename T>
@@ -64,3 +62,4 @@ class LockFreeRingBufferV2 : public Queue<T> {
   std::atomic<long> head_, tail_;
   long headCache_, tailCache_;
 };
+#endif  // INCLUDE_LOCKFREERINGBUFFERV2_H_
