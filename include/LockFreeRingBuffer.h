@@ -4,7 +4,7 @@
 
 // Single prudcer, sinlge consumer Ringbuffer
 
-template<typename T, size_t Size = 100000000>
+template<typename T, size_t Size = 1024*1024>
 class LockFreeRingBuffer : public Queue<T> {
 public:
     LockFreeRingBuffer() : head_(0), tail_(0) {}
