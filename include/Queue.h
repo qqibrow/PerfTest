@@ -7,7 +7,7 @@ public:
     Queue() {}
 
     // Blocking call. Return until operation done.
-
+    virtual std::string GetName() { return "not set.";}
     // Take one element out of queue
     virtual T take() {
         T return_element;

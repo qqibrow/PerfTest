@@ -24,6 +24,8 @@ public:
         }
     }
 
+    std::string GetName() {return "LockFreeBlockingQueue";};
+
     bool offer( const T& t ) {
         Node* last_real = last.load(std::memory_order_acquire);
         last_real->next = new Node(t);    // add the new item

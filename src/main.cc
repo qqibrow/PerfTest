@@ -1,45 +1,43 @@
 #include <thread>
 #include <gflags/gflags.h>
 #include <chrono>
+#include <iostream>
 
 
 #include "../include/LockBlockingQueue.h"
 #include "../include/LockFreeBlockingQueue.h"
 #include "../include/LockFreeRingBuffer.h"
-#include "../include/RingBufferV2.h"
+#include "../include/LockFreeRingBufferV2.h"
+#include "../include/LockFreeRingBufferV3.h"
 
 #define TEST_VALUE 5
+#define RUN_TIMES 5
 
 DEFINE_uint64(operator_count, 1000*1000, "The time of simple operator to run in test.");
 using namespace std;
 
-void RunPerfTest(Queue<int>* queue, const long count);
+void TestInBatch(Queue<int>* queue);
 
 int main(int argc, char* argv[]) {
 
     gflags::ParseCommandLineFlags(&argc, &argv, true);
     printf("Pass in operator count: %lld.\n", FLAGS_operator_count);
 
-    printf("LockFreeQueue\n");
-    Queue<int>* queue = new LockFreeBlockingQueue<int>();
-    for(int i = 0; i < 10; ++i) {
-        RunPerfTest(queue, FLAGS_operator_count);
-    }
-
-    printf("LockFreeRingBuffer\n");
-    Queue<int>* q = new LockFreeRingBuffer<int>();
-    for(int i = 0; i < 10; ++i) {
-        RunPerfTest(q, FLAGS_operator_count);
-    }
-
-    printf("RingbufferV2\n");
-    Queue<int>* q2 = new RingBufferV2<int>();
-    for(int i = 0; i < 10; ++i) {
-        RunPerfTest(q2, FLAGS_operator_count);
-    }
+    TestInBatch(new LockFreeBlockingQueue<int>());
+    TestInBatch(new LockFreeRingBuffer<int>());
+    TestInBatch(new LockFreeRingBufferV2<int>());
+    TestInBatch(new LockFreeRingBufferV3<int>());
 
     return 0;
 
+}
+
+void RunPerfTest(Queue<int>* queue, const long count);
+void TestInBatch(Queue<int>* queue) {
+    cout << queue->GetName() << endl;
+    for(int i = 0; i < RUN_TIMES; ++i) {
+        RunPerfTest(queue, FLAGS_operator_count);
+    }
 }
 
 void Producer(Queue<int>* queue, const long count) {

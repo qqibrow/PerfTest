@@ -9,6 +9,8 @@ class LockFreeRingBuffer : public Queue<T> {
 public:
     LockFreeRingBuffer() : head_(0), tail_(0) {}
 
+    std::string GetName() {return "LockFreeRingBuffer";};
+
     bool offer(const T& value)
     {
         size_t head = head_.load(std::memory_order_relaxed);

@@ -5,16 +5,17 @@
 #include <atomic>
 
 template<typename T>
-class RingBufferV2 : public Queue<T> {
+class LockFreeRingBufferV2 : public Queue<T> {
 public:
-    RingBufferV2() : head_(0), tail_(0) {
+    LockFreeRingBufferV2() : head_(0), tail_(0) {
         const size_t size = 1024*1024;
         rightSize_ = findNextPositivePowerOfTwo(size);
         mask_ = rightSize_ - 1;
         ring_ = new T[rightSize_];
     }
+    std::string GetName() {return "LockFreeRingBuffer";};
 
-    virtual ~RingBufferV2() {
+    virtual ~LockFreeRingBufferV2() {
         delete[] ring_;
     }
     bool offer(const T& value)
@@ -60,6 +61,6 @@ private:
     size_t rightSize_;
     int mask_;
 
-    alignas(128) std::atomic<long> head_, tail_;
-    alignas(128) long headCache_, tailCache_;
+    std::atomic<long> head_, tail_;
+    long headCache_, tailCache_;
 };
